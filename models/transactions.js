@@ -5,7 +5,13 @@ let transactionSchema = new Schema({
     member: {type: Schema.Types.ObjectId, ref: 'customers'},
     days: {
       type: Number,
-      required: [true, 'Days required']
+      required: [true, 'Days required'],
+      validate: {
+        validator: function(value) {
+          return value < 8;
+        },
+        message: 'maximum peminjaman 7 '
+      }
     },
     out_date: {
       type: Date,
@@ -21,7 +27,13 @@ let transactionSchema = new Schema({
     }, 
     fine: {
       type: Number,
-      required: [true, 'Name required']
+      required: [true, 'Name required'],
+      validate: {
+        validator: function(value) {
+          return value > 10000;
+        },
+        message: 'minimum denda 10000'
+      }
     },
     booklist: [{type: Schema.Types.ObjectId, ref: 'books'}]
   });

@@ -30,7 +30,7 @@ module.exports = {
             out_date: new Date(),
             due_date: new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)),
             in_date:  new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)), 
-            fine: 0,
+            fine: req.body.fine,
             booklist: req.body.booklist    
         }
         
@@ -73,7 +73,7 @@ module.exports = {
             days: req.body.days,
             due_date: new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)),
             in_date:  new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)), 
-            fine: null,
+            fine: req.body.fine,
             booklist: req.body.booklist    
         }
         
@@ -119,14 +119,29 @@ module.exports = {
                     }           
                     let diffDate = updateData.in_date.getDate() - data_transaction.due_date.getDate()
                     if(diffDate>0){
-                        updateData.fine = req.body.fine*(diffDate)
+                        updateData.fine = data_transaction.fine*(diffDate)
                     }else{
                         updateData.fine = 0;
                     }
                     
                     data_transaction.update(updateData)
                                     .then(result=>{
-                                        console.log(result)
+                                        data_transaction.booklist.forEach(bookId => {
+                                            var getId = mongoose.Types.ObjectId(bookId);
+                                            book.findOne({_id: getId})
+                                                .exec()
+                                                .then(data_book=>{
+                                                    let newStock = {stock: data_book.stock + 1}
+                                                    data_book.update(newStock)
+                                                        .then(result=>{
+                                                            console.log(result);    
+                                                        })
+                                                        .catch(err=>{
+                                                            console.log(err)
+                                                        })
+                                                })     
+                                        });
+
                                         res.status(200).json({
                                             message: "success return book",
                                             result
