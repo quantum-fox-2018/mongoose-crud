@@ -5,7 +5,7 @@ const Books = require('../controllers/books.controller')
 /* GET users listing. */
 router.get('/',Books.read)
 router.post('/',Books.create)
-router.put('/',Books.update)
-router.delete('/',Books.delete)
+router.put('/:id',Books.update)
+router.delete('/:id',Books.delete)
 
 module.exports = router;
