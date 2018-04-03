@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 const port = process.env.PORT || 4000
 const mongoose = require('mongoose')
 
@@ -9,6 +10,7 @@ const routeTransactions = require('./routes/transactions')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(morgan('dev'))
 mongoose.connect('mongodb://localhost/library')
 
 let db = mongoose.connection

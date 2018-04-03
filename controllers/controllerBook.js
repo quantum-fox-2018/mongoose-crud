@@ -17,6 +17,24 @@ module.exports = {
     })
   },
 
+  findOne: function(req, res) {
+    Book.findOne({
+      _id: req.params.id
+    })
+    .then(found => {
+      res.status(200).send({
+        message: 'Data found',
+        data: found
+      })
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: 'Data not found',
+        detail: err.message
+      })
+    })
+  },
+
   addNew: function(req, res) {
     let newBook = new Book({
       isbn: req.body.isbn,
@@ -28,7 +46,7 @@ module.exports = {
 
     newBook.save(newBook)
     .then(success => {
-      res.status(201).send({
+      res.status(200).send({
         message: 'Add data success',
         data: newBook
       })
@@ -60,6 +78,28 @@ module.exports = {
     .catch(err => {
       res.status(500).send({
         message: 'Update data failed',
+        detail: err.message
+      })
+    })
+  },
+
+  patchData: function(req, res) {
+    let patchData = req.body
+
+    Transaction.update({
+      _id: req.params.id
+    },
+      patchData  
+    )
+    .then(success => {
+      res.status(200).send({
+        message: 'Patch data success',
+        data: success
+      })
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: 'Patch data failed',
         detail: err.message
       })
     })

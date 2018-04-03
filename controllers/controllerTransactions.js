@@ -19,6 +19,24 @@ module.exports = {
     })
   },
 
+  findOne: function(req, res) {
+    Book.findOne({
+      _id: req.params.id
+    })
+    .then(found => {
+      res.status(200).send({
+        message: 'Data found',
+        data: found
+      })
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: 'Data not found',
+        detail: err.message
+      })
+    })
+  },
+
   addNew: function(req, res) {
     let newTrans = new Transaction({
       member: req.body.member,
@@ -58,7 +76,7 @@ module.exports = {
       booklist: req.body.booklist
     })
     .then(success => {
-      res.status(201).send({
+      res.status(200).send({
         message: 'Update data success',
         data: req.body
       })
@@ -66,6 +84,30 @@ module.exports = {
     .catch(err => {
       res.status(500).send({
         message: 'Update data failed',
+        detail: err.message
+      })
+    })
+  },
+
+  patchData: function(req, res) {
+    let patchData = req.body
+
+    Transaction.update({
+      _id: req.params.id
+    },
+      patchData  
+    )
+    .then(success => {
+      console.log(patchData);
+      
+      res.status(200).send({
+        message: 'Patch data success',
+        data: success
+      })
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: 'Patch data failed',
         detail: err.message
       })
     })
