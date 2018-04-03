@@ -9,4 +9,6 @@ router.put('/:id', transactionController.update)
 
 router.delete('/:id', transactionController.delete)
 
+router.patch('/:id', transactionController.addBookList)
+
 module.exports = router
