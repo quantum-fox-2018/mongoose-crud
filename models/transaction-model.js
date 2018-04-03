@@ -1,5 +1,7 @@
-const mongoose      = require('mongoose')
-const Schema        = mongoose.Schema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const Books = require('./book-model')
+const Customers  = require('./customer-model')
 
 const transactionSchema    = new Schema({
     member : {
@@ -13,7 +15,7 @@ const transactionSchema    = new Schema({
         default : Date.now
     },
     fine     : Number,
-    bookList : [
+    booklist : [
         { type : Schema.Types.ObjectId, ref : 'Books'}
     ],
     createdAt: {
