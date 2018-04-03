@@ -29,8 +29,5 @@ let transactionSchema = new Schema({
 
 let transaction = mongoose.model('transactions', transactionSchema);
 
-// animalSchema.methods.findSimilarTypes = function(cb) {
-//   return this.model('Animal').find({ type: this.type }, cb);
-// };
 
 module.exports = transaction

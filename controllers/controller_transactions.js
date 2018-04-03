@@ -1,6 +1,5 @@
-const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017";
 const transaction = require('../models/transactions');
+const book = require('../models/books');
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -20,32 +19,46 @@ module.exports = {
             res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
         
     },
-    addData: function(req, res){      
+    addTransaction: function(req, res){      
 
         let newData = {      
             member: req.body.member,
             days: req.body.days,
             out_date: new Date(),
             due_date: new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)),
-            in_date:  new Date(new Date().getTime()+((req.body.return)*24*60*60*1000)), 
-            fine: null,
+            in_date:  new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)), 
+            fine: 0,
             booklist: req.body.booklist    
         }
         
         let newtransaction = new transaction(newData)
-
-        newtransaction.fine = req.body.fine*(Math.abs(newtransaction.in_date.getDate() - newtransaction.due_date.getDate()))
 
         newtransaction.save((err, result)=>{
             if (err){
                 res.status(500).json({
                     message: err.message
                 })
-            } else{                   
+            } else{
+                result.booklist.forEach(bookId => {
+                    var getId = mongoose.Types.ObjectId(bookId);
+                    book.findOne({_id: getId})
+                        .exec()
+                        .then(data_book=>{
+                            let newStock = {stock: data_book.stock - 1}
+                            data_book.update(newStock)
+                                .then(result=>{
+                                    console.log(result);    
+                                })
+                                .catch(err=>{
+                                    console.log(err)
+                                })
+                        })
+                        
+                });
+
                 res.status(201).json({
                     message: "success add transaction",
                     result: result
@@ -59,13 +72,11 @@ module.exports = {
             member: req.body.member,
             days: req.body.days,
             due_date: new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)),
-            in_date:  new Date(new Date().getTime()+((req.body.return)*24*60*60*1000)), 
+            in_date:  new Date(new Date().getTime()+((req.body.days)*24*60*60*1000)), 
             fine: null,
             booklist: req.body.booklist    
         }
         
-        updateData.fine = req.body.fine*(Math.abs(updateData.in_date.getDate() - updateData.due_date.getDate()))
-
         let getId = mongoose.Types.ObjectId(req.params.id);
         
         transaction.findOneAndUpdate({_id: getId}, updateData)
@@ -78,7 +89,6 @@ module.exports = {
                 res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
     },
     deleteData: function(req, res){
@@ -94,7 +104,44 @@ module.exports = {
                 res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
+    },
+    returnBook: function(req, res){
+
+       let getId = mongoose.Types.ObjectId(req.params.id);
+
+       transaction.findOne({_id: getId})
+                  .exec()
+                  .then(data_transaction=>{
+
+                    let updateData = {
+                        in_date: new Date(new Date().getTime()+((req.body.return)*24*60*60*1000))
+                    }           
+                    let diffDate = updateData.in_date.getDate() - data_transaction.due_date.getDate()
+                    if(diffDate>0){
+                        updateData.fine = req.body.fine*(diffDate)
+                    }else{
+                        updateData.fine = 0;
+                    }
+                    
+                    data_transaction.update(updateData)
+                                    .then(result=>{
+                                        console.log(result)
+                                        res.status(200).json({
+                                            message: "success return book",
+                                            result
+                                        })
+                                    })
+                                    .catch(err=>{
+                                        res.status(500).json({
+                                        message: err.message
+                                        })
+                                    })      
+                  })
+                  .catch(err=>{
+                        res.status(500).json({
+                        message: err.message
+                        })
+                    })
     }
 }

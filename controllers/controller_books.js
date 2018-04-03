@@ -1,9 +1,5 @@
-const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017";
 const book = require('../models/books');
 const mongoose = require('mongoose');
-
-
 
 module.exports = {
 
@@ -21,7 +17,6 @@ module.exports = {
             res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
         
     },
@@ -72,7 +67,6 @@ module.exports = {
                 res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
     },
     deleteData: function(req, res){
@@ -88,7 +82,6 @@ module.exports = {
                 res.status(500).json({
                 message: err.message
             })
-            client.close()
         })
     }
 }
