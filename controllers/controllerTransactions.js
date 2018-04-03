@@ -1,8 +1,10 @@
 const Transaction = require('../models/modelTransaction')
+const { getDueDate, calculateFine } = require('../helpers/calculateDateAndFine')
 
 module.exports = {
   findAll: function(req, res) {
     Transaction.find()
+    .populate(['member', 'booklist'])
     .then(dataTrans => {
       res.status(200).send({
         message: 'Show all data',
@@ -18,14 +20,21 @@ module.exports = {
   },
 
   addNew: function(req, res) {
-    let newCust = new Transaction({
+    let newTrans = new Transaction({
+      member: req.body.member,
+      days: req.body.days,
+      out_date: req.body.out_date,
+      due_date: getDueDate(req.body.out_date, req.body.days),
+      in_date: req.body.in_date,
+      fine: calculateFine(getDueDate(req.body.out_date, req.body.days), req.body.in_date),
+      booklist: req.body.booklist
     })
-
-    newCust.save()
+    
+    newTrans.save()
     .then(success => {
       res.status(201).send({
         message: 'Add data success',
-        data: newCust
+        data: newTrans
       })
     })
     .catch(err => {
@@ -36,10 +45,17 @@ module.exports = {
     })
   }, 
 
-  updateData: function(req, res) {
+  updateData: function(req, res) {    
     Transaction.findOneAndUpdate({
       _id: req.params.id
     },{
+      member: req.body.member,
+      days: req.body.days,
+      out_date: req.body.out_date,
+      due_date: getDueDate(req.body.out_date, req.body.days),
+      in_date: req.body.in_date,
+      fine: calculateFine(getDueDate(req.body.out_date, req.body.days), req.body.in_date),
+      booklist: req.body.booklist
     })
     .then(success => {
       res.status(201).send({
