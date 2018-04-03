@@ -1,0 +1,24 @@
+{
+  "name": "mongoose-crud",
+  "version": "1.0.0",
+  "description": "REST API (CRUD) with Mongoose ODM",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quantum-fox-2018/mongoose-crud.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quantum-fox-2018/mongoose-crud/issues"
+  },
+  "homepage": "https://github.com/quantum-fox-2018/mongoose-crud#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongoose": "^5.0.12",
+    "morgan": "^1.9.0"
+  }
+}
