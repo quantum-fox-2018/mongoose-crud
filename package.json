@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-crud",
+  "version": "1.0.0",
+  "description": "REST API (CRUD) with Mongoose ODM",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.0.5",
+    "mongoose": "^5.0.12",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WikaSilo/mongoose-crud.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WikaSilo/mongoose-crud/issues"
+  },
+  "homepage": "https://github.com/WikaSilo/mongoose-crud#readme"
+}
