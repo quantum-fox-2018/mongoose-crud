@@ -3,8 +3,10 @@ var router = express.Router();
 const Transaction = require('../controllers/transactions.controller')
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/',Transaction.read)
+router.post('/',Transaction.create)
+router.put('/',Transaction.return)
+router.delete('/',Transaction.delete)
+
 
 module.exports = router;
