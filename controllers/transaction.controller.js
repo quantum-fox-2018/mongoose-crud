@@ -1,4 +1,5 @@
 const transaction = require('../models/transaction.model')
+const mongoose = require('mongoose');
 
 module.exports = {
     getAllTransactions (req, res) {
@@ -35,9 +36,10 @@ module.exports = {
         });
     },
     createTransaction (req, res) {
-        const {member, days, out_date, due_date, in_date, fine, booklist} = req.body
+        const {member, days, out_date, fine, booklist} = req.body
+        const date = new Date(out_date);
         let newTransaction = new transaction({
-            member, days, out_date, due_date, in_date, fine, booklist
+            member, days, out_date, due_date, fine, booklist
         })
 
         newTransaction.save((err, result) => {
@@ -48,9 +50,47 @@ module.exports = {
                 })
             } else {
                 res.status(400).send({
-                    message: err
+                    message: err.message
                 })
             }
+        })
+    },
+    returnTransaction (req, res) {
+        const id = mongoose.Types.ObjectId(req.params.id)
+        const {in_date} = req.body
+        const date = new Date(in_date);
+        console.log("---", date)
+        transaction.findOne({_id: id})
+        .exec()
+        .then(data => {
+            const timeDiff = Math.abs(date.getTime() - data.due_date.getTime());
+            const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+            const fine = diffDays * data.booklist.length * 1000
+            transaction.update(
+            {
+                _id: id
+            },
+            {
+                $set: {
+                    fine,
+                    in_date
+                }
+            },
+            {
+                overwrite: false
+            },
+            function (err, transaction) {
+                if(!err) {
+                    res.status(200).send({
+                        message: 'return transaction success',
+                        data: transaction
+                    })
+                } else {
+                    res.status(400).send({
+                        message: 'return transaction failed'
+                    })
+                }
+            });
         })
     },
     deleteTransaction (req, res) {

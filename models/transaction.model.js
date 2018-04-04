@@ -6,8 +6,14 @@ let transactionSchema = mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "customers"
     },
-    days: Number,
-    out_date: Date,
+    days: {
+        type: Number,
+        required: [true, 'days required']
+    },
+    out_date: {
+        type: Date,
+        required: [true, 'out_date required']
+    },
     due_date: Date,
     in_date: Date,
     fine: Number,

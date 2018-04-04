@@ -46,7 +46,7 @@ module.exports = {
                 })
             } else {
                 res.status(400).send({
-                    message: 'create book failed'
+                    message: err.message
                 })
             }
         })
